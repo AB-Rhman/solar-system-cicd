@@ -15,10 +15,10 @@ jobs:
     unit-testing:
         strategy:
           matrix:
-            nodejs_version: [18, 19, 20]
+            nodejs_version: [19, 20]
             os: [ubuntu-latest, ubuntu-22.04]
             exclude:
-              - nodejs_version: 18
+              - nodejs_version: 19
                 os: ubuntu-22.04
         name: Unit Testing
         runs-on: ${{matrix.os}}
@@ -38,7 +38,7 @@ jobs:
           run: npm test
 
         - name: Archive Test Result
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@v3
           with:
             name: Mocha-Test-Result
             path: test-results.xml
