@@ -17,6 +17,7 @@ jobs:
           matrix:
             nodejs_version: [20]
             os: [ubuntu-latest, ubuntu-22.04]
+        
         name: Unit Testing
         runs-on: ${{matrix.os}}
         steps:
@@ -27,14 +28,23 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: ${{matrix.nodejs_version}}
+
+        - name: Cache NPM dependencies
+          uses: actions/cache@v3
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-node-${{ hashFiles('/package-lock.json') }}
     
         - name: Install Dependencies
           run: npm install
     
         - name: Unit Testing
+          id: nodej-unit-testing-step
           run: npm test
 
         - name: Archive Test Result
+          if: always() 
+           # steps.nodej-unit-testing-step.outcome == 'failure' || steps.nodej-unit-testing-step.outcome == 'success'
           uses: actions/upload-artifact@v3
           with:
             name: Mocha-Test-Result
@@ -52,6 +62,12 @@ jobs:
           with:
             node-version: 20
         
+        - name: Cache NPM dependencies
+          uses: actions/cache@v3
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-node-${{ hashFiles('/package-lock.json') }}
+
         - name: Install Dependencies
           run: npm install
 
